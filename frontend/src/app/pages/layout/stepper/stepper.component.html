@@ -1,0 +1,110 @@
+<div class="steppers-container row">
+  <div class="col-12">
+    <nb-card>
+      <nb-card-body>
+        <nb-stepper #stepper [linear]="true" disableStepNavigation>
+          <nb-step label="Amount">
+            <nb-alert status="danger" *ngIf="amountFormError">
+              Form has errors. Enter a valid amount (mustn't have any decimals) and a valid description (empty is not allowed).
+            </nb-alert>
+            <form class="step-container">
+              <p class="lorem">
+                By using this application, you accept the terms and conditions and the privacy policy.
+                Your data is going to be encrypted.
+              </p>
+              <div class="input-group">
+                <textarea nbInput fullWidth placeholder="Transaction description"  [(ngModel)]="description" name="description"></textarea>
+              </div>
+              <div class="input-group">
+                <input placeholder="Amount" type="number" class="form-control" [(ngModel)]="amount" name="amount">
+              </div>
+              <button nbButton (click)="amountForm()">next</button>
+            </form>
+          </nb-step>
+          <nb-step label="Beneficiary">
+            <form class="step-container">
+              <nb-alert status="danger" *ngIf="beneficiaryFormError">
+                Form has errors. Enter a valid amount (mustn't have any decimals) and a valid description (empty is not allowed).
+              </nb-alert>
+              <p class="lorem">
+                Pick a beneficiary for the transaction for amount {{amount}}€.
+              </p>
+              <div class="input-group">
+                <nb-select fullWidth placeholder="Select beneficiary" [(selected)]="to">
+                  <nb-option *ngFor="let availableBeneficiary of availableBeneficiaries"
+                  [value]="availableBeneficiary">{{availableBeneficiary.name + ' ' + availableBeneficiary.surnames}}</nb-option>
+                </nb-select>
+              </div>
+              <button nbButton nbStepperPrevious>prev</button>
+              <button nbButton (click)="beneficiaryForm()">next</button>
+            </form>
+          </nb-step>
+          <nb-step label="Digital signature">
+            <form class="step-container">
+
+              <nb-alert status="danger" *ngIf="diginalSignatureFormError">
+                Public assymetric transaction key is not valid. You may logout and login to reset it.
+              </nb-alert>
+              <p class="lorem">
+                Enter the public key that you received during login.
+              </p>
+
+              <div class="input-group">
+                <textarea nbInput fullWidth placeholder="Digital signature public assymetric certificate key."  [(ngModel)]="pubKey" name="description"></textarea>
+              </div>
+              <button nbButton nbStepperPrevious>prev</button>
+              <button nbButton (click)="digitalSignatureForm()">next</button>
+            </form>
+          </nb-step>
+          <nb-step label="Review">
+            <form class="step-container">
+              <p class="lorem">
+                Please, check below data. If it's correct, click the button "Confirm transaction".
+              </p>
+              <nb-card>
+                <nb-card-header>Summary</nb-card-header>
+                <nb-card-body>
+                  <form>
+                    <div class="form-group row">
+                      <label class="label col-sm-3 col-form-label">Description</label>
+                      <div class="col-sm-9">
+                        <input type="text" disabled nbInput fullWidth [value]="description">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="label col-sm-3 col-form-label">Amount</label>
+                      <div class="col-sm-9">
+                        <input type="text" disabled nbInput fullWidth [value]="amount + '€'">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="label col-sm-3 col-form-label">Beneficiary</label>
+                      <div class="col-sm-9">
+                        <input type="text" disabled nbInput fullWidth [value]="to.name + ' ' + to.surnames">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="label col-sm-3 col-form-label">Signature key</label>
+                      <div class="col-sm-9">
+                        <input type="text" disabled nbInput fullWidth [value]="pubKey">
+                      </div>
+                    </div>
+                  </form>
+                </nb-card-body>
+              </nb-card>
+              <button nbButton nbStepperPrevious>prev</button>
+              <button nbButton (click)="reviewForm()">Confirm transaction</button>
+            </form>
+          </nb-step>
+          <nb-step [hidden]="true" label="Transaction finished">
+            <div class="step-container">
+              <h3 *ngIf="!decryptionError">Transaction success!</h3>
+              <h3 *ngIf="decryptionError">Transaction ERROR!</h3>
+              <button nbButton (click)="stepper.reset()">Understood</button>
+            </div>
+          </nb-step>
+        </nb-stepper>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
